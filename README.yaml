@@ -1,0 +1,64 @@
+name: terraform-container-datadog
+
+license: custom
+
+github_repo: SemanticSugar/terraform-container-datadog
+
+related:
+- name: terraform-aws-ecs-container-definition
+  description: Terraform module to generate well-formed JSON documents (container
+    definitions) that are passed to the aws_ecs_task_definition Terraform resource
+  url: https://github.com/cloudposse/terraform-aws-ecs-container-definition
+
+description: Terraform module to generate well-formed JSON documents that are passed
+  to the `aws_ecs_task_definition` Terraform resource as [container definitions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#container_definitions).
+
+usage: |-
+  This module is meant to be used as output only, meaning it will be used to create outputs which are consumed as a parameter by Terraform resources or other modules.
+
+  For complete examples, see
+  - [complete](examples/complete)
+  
+  For a complete example with automated tests, see [examples/complete](examples/complete) with `bats` and `Terratest` for the example [test](test).
+
+  ```hcl
+  locals {
+    # can also be set to terraform.workspace
+    env = "staging"
+
+    container_port = 8080
+  }
+
+  module "datadog_container" {
+    # this can and should be pinned to a release tag using ?ref=tags/x.y.z
+    source = "git@github.com:SemanticSugar/terraform-container-datadog.git?ref=master"
+
+    dd_tags = "env:${local.env}"
+
+    # example dockerlabels
+    # https://docs.datadoghq.com/integrations/faq/integration-setup-ecs-fargate/?tab=rediswebui
+    docker_labels = {
+      # container port has to be manually set
+      "com.datadoghq.ad.instances" = "[{\"host\": \"%%host%%\",\"port\": ${local.container_port}}]"
+      # check_names is for integrations
+      "com.datadoghq.ad.check_names" = "[\"supervisord\"]"
+      "com.datadoghq.ad.init_configs" = "[{}]"
+    }
+  }
+
+  module "task" {
+    source = "git::https://github.com/cloudposse/terraform-aws-ecs-alb-service-task.git?ref=tags/0.31.0"
+
+    name = local.container_name
+
+    container_definition_json = jsonencode([
+      module.datadog_container.json_map,
+    ])
+
+    # ...
+  }
+  ```
+
+include:
+- docs/targets.md
+- docs/terraform.md
