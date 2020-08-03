@@ -60,7 +60,7 @@ Terraform module to generate well-formed JSON documents that are passed to the `
 
 
 **IMPORTANT:** The `main` branch is used in `source` just as an example. In your code, do not pin to `main` because there may be breaking changes between releases.
-Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/SemanticSugar/terraform-container-datadog/releases).
+Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/AdRoll/terraform-container-datadog/releases).
 
 
 This module is meant to be used as output only, meaning it will be used to create outputs which are consumed as a parameter by Terraform resources or other modules.
@@ -80,7 +80,7 @@ locals {
 
 module "datadog_container" {
   # this can and should be pinned to a release tag using ?ref=tags/x.y.z
-  source = "git@github.com:SemanticSugar/terraform-container-datadog.git?ref=main"
+  source = "git::https://github.com/AdRoll/terraform-container-datadog.git?ref=main"
 
   dd_tags = "env:${local.env}"
 
@@ -141,8 +141,9 @@ README_TEMPLATE_FILE=docs/README.md.gotmpl make readme
 
 
 
+<!-- markdownlint-disable -->
 ## Makefile Targets
-```
+```text
 Available targets:
 
   help                                Help screen
@@ -150,6 +151,7 @@ Available targets:
   help/short                          This help short screen
 
 ```
+<!-- markdownlint-restore -->
 ## Requirements
 
 | Name | Version |

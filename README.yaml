@@ -2,7 +2,7 @@ name: terraform-container-datadog
 
 license: custom
 
-github_repo: SemanticSugar/terraform-container-datadog
+github_repo: AdRoll/terraform-container-datadog
 
 related:
 - name: terraform-aws-ecs-container-definition
@@ -31,7 +31,7 @@ usage: |-
 
   module "datadog_container" {
     # this can and should be pinned to a release tag using ?ref=tags/x.y.z
-    source = "git@github.com:SemanticSugar/terraform-container-datadog.git?ref=main"
+    source = "git::https://github.com/AdRoll/terraform-container-datadog.git?ref=main"
 
     dd_tags = "env:${local.env}"
 
