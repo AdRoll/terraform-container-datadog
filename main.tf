@@ -3,7 +3,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-data "aws_s3_bucket_object" "api_key" {
+data "aws_s3_object" "api_key" {
   count = length(var.api_key) == 0 ? 1 : 0
 
   provider = aws.us-east-1
@@ -30,7 +30,7 @@ locals {
     ECS_FARGATE              = tostring(var.ecs_fargate)
     DD_PROCESS_AGENT_ENABLED = tostring(var.process_agent_enabled)
     DD_APM_ENABLED           = tostring(var.apm_enabled)
-    DD_API_KEY               = length(var.api_key) > 0 ? var.api_key : base64decode(join("", data.aws_s3_bucket_object.api_key.*.body))
+    DD_API_KEY               = length(var.api_key) > 0 ? var.api_key : base64decode(join("", data.aws_s3_object.api_key.*.body))
     DD_APM_NON_LOCAL_TRAFFIC = tostring(var.apm_non_local_traffic)
     DD_TAGS                  = var.dd_tags
   }, var.map_environment)
